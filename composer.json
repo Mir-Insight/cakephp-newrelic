@@ -1,5 +1,5 @@
 {
-  "name":"Mir-Insight/cakephp-newrelic",
+  "name":"mir-insight/cakephp-newrelic",
   "version": "1.0.0",
   "description":"CakePHP <3 NewRelic",
   "type":"cakephp-plugin",
