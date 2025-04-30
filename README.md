@@ -1,127 +1,117 @@
-# CakePHP <3 NewRelic
+# CakePHP NewRelic Plugin
 
-You can modify your files like this
+A CakePHP 5 plugin for NewRelic integration that provides automatic transaction tracking, error reporting, and custom metrics.
 
-## Things included
+## Requirements
 
-- NewRelic.NewRelic task
-- NewRelic.NewRelic component
-- NewRelicTrait trait
-- NewRelic.NewRelic
+- PHP 8.1 or higher
+- CakePHP 5.0 or higher
+- NewRelic PHP extension
 
 ## Installation
 
+You can install this plugin into your CakePHP application using [composer](https://getcomposer.org).
+
+```bash
+composer require mir-insight/cakephp-newrelic
 ```
-composer require jippi/cakephp-newrelic
-```
 
+## Configuration
 
-### Console
-
-Include this snippet in `app/Console/AppShell.php`
+1. Load the plugin in your `config/bootstrap.php`:
 
 ```php
-	public function startup() {
-		$this->NewRelic = $this->Tasks->load('NewRelic.NewRelic');
-		$this->NewRelic->setName($this);
-		$this->NewRelic->start();
-		$this->NewRelic->parameter('params', json_encode($this->params));
-		$this->NewRelic->parameter('args', json_encode($this->args));
-
-		parent::startup();
-	}
+// Load the plugin
+$app->addPlugin('NewRelic');
 ```
 
-### Controller
-
-Simply add `NewRelic.NewRelic` to your `$components` list
-
-## app/webroot/index.php
-
-Add this in top of your file before `define('DS', 'DIRECTORY_SEPARATOR')`
+2. Configure the plugin in your `config/app.php` or create a new file `config/newrelic.php`:
 
 ```php
-<?php
-require_once dirname(dirname(__DIR__)) . '/vendors/autoload.php';
-
-if (extension_loaded('newrelic')) {
-	$appType = 'app';
-	$appName = 'web';
-
-	if (strpos($_SERVER['REQUEST_URI'], '/admin/') !== false) {
-		$appName = 'admin';
-	}
-
-	define('NEW_RELIC_APP_NAME', sprintf('%1$s - %2$s - %3$s', 'production', $appType, $appName));
-
-	newrelic_set_appname(NEW_RELIC_APP_NAME);
-	newrelic_background_job(false);
-	newrelic_capture_params(true);
-}
-
-// Rest of your index.php here
+return [
+    'NewRelic' => [
+        'enabled' => true,
+        'appName' => 'My Application',
+        'captureParams' => true,
+        'customParameters' => [
+            'environment' => 'production',
+            'version' => '1.0.0',
+        ],
+    ],
+];
 ```
 
-## app/Console/cake.php
+## Usage
+
+The plugin automatically integrates with your CakePHP application and provides the following features:
+
+1. Automatic transaction tracking for all HTTP requests
+2. Exception tracking
+3. Custom parameter and metric tracking
+4. Custom tracer methods
+
+### Using the NewRelic Service
+
+You can access the NewRelic service in your controllers, components, or other services:
 
 ```php
-<?php
-require_once dirname(dirname(__DIR__)) . '/vendors/autoload.php';
+use NewRelic\Service\NewRelicServiceInterface;
 
-if (extension_loaded('newrelic')) {
-	define('NEW_RELIC_APP_NAME', sprintf('%s - app - cli', 'production'));
-	newrelic_set_appname(NEW_RELIC_APP_NAME);
-	newrelic_background_job(true);
-	newrelic_capture_params(true);
-}
-
-// Rest of your cake.php file here
-```
-
-### Remark if using > CakePHP 3.3.0 and using middleware
-If you utilise CakePHP middlewares from https://book.cakephp.org/3.0/en/controllers/middleware.html 
-
-You can use the supplied `NewRelicErrorHandlerMiddleware` placed in `NewRelic\Middleware\NewRelicErrorHandlerMiddleware` which extends the built in `Cake\Error\Middleware\ErrorHandlerMiddleware`. By using this you'll get the NewRelic working *and* have default CakePHP behavior.
-
-Example:
-
-```php
-<?php
-
-namespace App;
-
-use Cake\Http\BaseApplication;
-use Cake\Routing\Middleware\AssetMiddleware;
-use Cake\Routing\Middleware\RoutingMiddleware;
-
-/**
- * Application setup class.
- *
- * This defines the bootstrapping logic and middleware layers you
- * want to use in your application.
- */
-class Application extends BaseApplication
+class MyController extends AppController
 {
-    /**
-     * Setup the middleware your application will use.
-     *
-     * @param \Cake\Http\MiddlewareQueue $middleware The middleware queue to setup.
-     * @return \Cake\Http\MiddlewareQueue The updated middleware.
-     */
-    public function middleware($middleware)
+    public function index(NewRelicServiceInterface $newRelic)
     {
-        $middleware
-            // Catch any exceptions in the lower layers,
-            // and make an error page/response
-            ->add(\NewRelic\Middleware\NewRelicErrorHandlerMiddleware::class)
-            // Handle plugin/theme assets like CakePHP normally does.
-            ->add(AssetMiddleware::class)
-            // Apply routing
-            ->add(RoutingMiddleware::class);
-	    
-        return $middleware;
+        // Add custom parameters
+        $newRelic->addCustomParameter('user_id', $this->Auth->user('id'));
+        
+        // Add custom metrics
+        $newRelic->addCustomMetric('custom/feature_usage', 1.0);
+        
+        // Record exceptions
+        try {
+            // Your code here
+        } catch (\Throwable $e) {
+            $newRelic->recordException($e);
+            throw $e;
+        }
     }
 }
-
-?>
 ```
+
+### Custom Tracers
+
+You can add custom tracer methods in your configuration:
+
+```php
+return [
+    'NewRelic' => [
+        'customTracers' => [
+            'App\Model\Table\UsersTable::findActive',
+            'App\Service\CacheService::get',
+        ],
+    ],
+];
+```
+
+## Features
+
+- Automatic transaction tracking
+- Exception tracking
+- Custom parameter tracking
+- Custom metric tracking
+- Custom tracer methods
+- Middleware integration
+- Service container integration
+- Configuration options
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
