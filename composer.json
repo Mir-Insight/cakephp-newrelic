@@ -9,18 +9,23 @@
     "apm",
     "plugin"
   ],
-  "homepage":"https://github.com/jippi/cakephp-newrelic",
+  "homepage":"https://github.com/mir-insight/cakephp-newrelic",
   "license":"MIT",
   "authors":[
     {
       "name":"Christian Winther",
       "role":"Author",
       "homepage":"http://cakephp.nu/"
+    },
+    {
+      "name":"Miguel Enes",
+      "role":"Author",
+      "homepage":"https://www.mirinsight.com"
     }
   ],
   "support":{
-    "source":"https://github.com/jippi/cakephp-newrelic",
-    "issues":"https://github.com/jippi/cakephp-newrelic/issues",
+    "source":"https://github.com/mir-insight/cakephp-newrelic",
+    "issues":"https://github.com/mir-insight/cakephp-newrelic/issues",
     "irc":"irc://irc.freenode.org/friendsofcake"
   }
 }
