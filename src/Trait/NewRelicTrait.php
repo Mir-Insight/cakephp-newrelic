@@ -1,4 +1,5 @@
 <?php
+namespace NewRelic\Trait;
 
 App::uses('NewRelic', 'NewRelic.Lib');
 

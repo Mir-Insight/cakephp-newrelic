@@ -1,5 +1,7 @@
 <?php
 
+namespace NewRelic\Lib;
+
 /**
  * Class to help work with NewRelic in PHP
  *
