@@ -1,6 +1,6 @@
 {
   "name":"mir-insight/cakephp-newrelic",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description":"CakePHP 5 NewRelic Integration",
   "type":"cakephp-plugin",
   "keywords":[
